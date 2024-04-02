@@ -1,13 +1,13 @@
-#!/usr/bin/env/python3
-#python subnetting script
-#this script will ask the user if they are providing an IP with CIDR, or if they are providing a number of hosts or a number of networks required and
-#provide the corresponding information
+#!/usr/bin/env python3
+# Python subnetting script
+# This script asks the user if they are providing an IP with CIDR, or if they are providing a number of hosts or a number of networks required and
+# provides the corresponding information
 
 import ipaddress
 
 def validate_ip(ip):
     try:
-        ipaddress.ip.address(ip)
+        ipaddress.ip_address(ip)
         return True
     except ValueError:
         return False
@@ -20,46 +20,46 @@ def validate_cidr(cidr):
         return False
     
 def calc_subnet_info(ip_cidr):
-    #parse the IP address and CIDR
+    # Parse the IP address and CIDR
     network = ipaddress.ip_network(ip_cidr, strict=False)
 
-    #get network address
+    # Get network address
     network_address = network.network_address
 
-    #get netmask
+    # Get netmask
     netmask_address = network.netmask
 
-    #get the broadcast address
+    # Get the broadcast address
     broadcast_address = network.broadcast_address
 
-    #get address range
-    address_range = f"{network_address +1 } to {broadcast_address - 1}"
+    # Get address range
+    address_range = f"{network_address + 1} to {broadcast_address - 1}"
 
     return network_address, netmask_address, broadcast_address, address_range
 
 def calc_ip_with_cidr(num_hosts):
-    #calculate CIDR based on the required number of hosts
+    # Calculate CIDR based on the required number of hosts
     prefix_length = 32 - (num_hosts + 2).bit_length()
     cidr = f"/{prefix_length}"
 
     return cidr
 
-def calc_ip_w_cidr_netwk(addr_class, num_networks):                         #need to correct this. will need to ask user for class a b or c network
-    #calculate CIDR based on required number of networks and address class
-    prefix_length = 32 - (num_networks + 2).bit_length()
+def calc_ip_w_cidr_netwk(num_networks):
+    # Calculate CIDR based on required number of networks
+    prefix_length = 32 - num_networks.bit_length()
     cidr = f"/{prefix_length}"
 
     return cidr
 
 def main():
-    #determine user input type
     while True:
         print("")
         print("Subnet Calculator")
         print("")
         print(" 1. Provide IP/CIDR to get information about the provided subnet.")
         print(" 2. Provide a number of hosts you need to subnet.")
-        print(" 3. Provide an address class and number of networks needed for subnetting.")
+        print(" 3. Provide the number of networks needed for subnetting.")
+        print(" 4. Exit")
         print("")
         input_type = input("Please enter a selection from above: ")
 
@@ -71,31 +71,60 @@ def main():
                     break
                 else:
                     print("Invalid CIDR notation, please try again.")
-            break
+            display_subnet_info(ip_cidr)
+            if input("Press Enter to return to the main menu or 'q' to exit: ").strip().lower() == 'q':
+                break
 
         elif input_type == "2":
             while True:
                 print("")
-            #perform host function
-            break
+                num_hosts = int(input("Enter the number of hosts you need addresses for: "))
+                if num_hosts > 0:
+                    break
+                else:
+                    print("Invalid number of hosts, please enter a positive integer.")
+
+            cidr = calc_ip_with_cidr(num_hosts)
+            print(f"Recommended CIDR notation for {num_hosts} hosts:", cidr)
+            ip_cidr = input("Enter IP address (optional): ").strip() + cidr
+            display_subnet_info(ip_cidr)
+            if input("Press Enter to return to the main menu or 'q' to exit: ").strip().lower() == 'q':
+                break
 
         elif input_type == "3":
-            #perform network function
+            while True:
+                print("")
+                num_networks = int(input("Enter the number of networks you need addresses for: "))
+                if num_networks > 0:
+                    break
+                else:
+                    print("Invalid number of networks, please enter a positive integer.")
+
+            cidr = calc_ip_w_cidr_netwk(num_networks)
+            print(f"Recommended CIDR notation for {num_networks} networks:", cidr)
+            ip_cidr = input("Enter IP address(optional): ").strip() + cidr
+            display_subnet_info(ip_cidr)
+            if input("Press Enter to return to the main menu or 'q' to exit: ").strip().lower() == 'q':
+                break
+
+        elif input_type == "4":
+            print("Exiting the program.")
             break
 
         else:
             print("Invalid input, please try again.")
-            break
 
-    #calculate subnet info if IP/CIDR provided
+def display_subnet_info(ip_cidr):
+    # Calculate subnet information if IP/CIDR provided
     if ip_cidr:
         network_address, netmask_address, broadcast_address, address_range = calc_subnet_info(ip_cidr)
 
-        #print the results
+        # Print the results
         print("Network Address:", network_address)
         print("Netmask Address:", netmask_address)
         print("Broadcast Address:", broadcast_address)
         print("Address Range:", address_range)
+
 
 if __name__ == "__main__":
     main()
