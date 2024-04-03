@@ -51,6 +51,14 @@ def calc_ip_w_cidr_netwk(num_networks):
 
     return cidr
 
+def calc_ip_w_cidr_subnet(net_class, num_subs):
+    #calculate the number of subnets available based on network class
+    addr_class_bits = {"A": 8, "B": 16, "C": 24}
+    prefix_length = 32 - (num_subs +2).bit_length() - addr_class_bits.get(net_class.upper(), 24)
+    cidr = f"/{prefix_length}"
+
+    return cidr
+
 def main():
     while True:
         print("")
@@ -58,7 +66,7 @@ def main():
         print("")
         print(" 1. Provide IP/CIDR to get information about the provided subnet.")
         print(" 2. Provide a number of hosts you need to subnet.")
-        print(" 3. Provide the number of networks needed for subnetting.")
+        print(" 3. Determine how many subnets you can make based on address class.")
         print(" 4. Exit")
         print("")
         input_type = input("Please enter a selection from above: ")
@@ -94,13 +102,23 @@ def main():
         elif input_type == "3":
             while True:
                 print("")
-                num_networks = int(input("Enter the number of networks you need addresses for: "))
+                net_class = (input("Please enter the class of address you would like to subnet (A, B, or C: )"))
+                if net_class != "":
+                    break
+                else:
+                    print("Invalid address class, please enter A, B, or C.")                
+                
+                print("")
+                num_networks = int(input("Enter the number of subnets you need addresses for: "))
                 if num_networks > 0:
                     break
                 else:
                     print("Invalid number of networks, please enter a positive integer.")
 
-            cidr = calc_ip_w_cidr_netwk(num_networks)
+
+            
+
+            cidr = calc_ip_w_cidr_subnet(net_class, num_networks)
             print(f"Recommended CIDR notation for {num_networks} networks:", cidr)
             ip_cidr = input("Enter IP address(optional): ").strip() + cidr
             display_subnet_info(ip_cidr)
