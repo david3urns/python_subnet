@@ -106,7 +106,7 @@ def calc_cidr_from_sub(net_class, num_nets_needed):
     if net_class == 'A'.strip().lower():
         result = [(cidr, value) for cidr, value in subnet_dict.items() if value >= num_nets_needed]
         first_result = str(result[0])
-        end_result = print(f"You will need a CIDR notation of /{first_result[1:3]} to accomidate {num_nets_needed} subnets on a class {net_class.upper()} network.")
+        end_result = f"You will need a CIDR notation of /{first_result[1:3]} to accomidate {num_nets_needed} subnets on a class {net_class.upper()} network."
         return end_result
 
     elif net_class == 'B'.strip().lower():
@@ -149,7 +149,7 @@ def main():
         elif input_type == "2":
             while True:
                 print("")
-                num_hosts = int(input("Enter the number of hosts you need addresses for: "))
+                num_hosts = int(input("Enter the number of hosts you need addresses for: ")).strip()
                 if num_hosts > 0:
                     break
                 else:
@@ -179,7 +179,7 @@ def main():
                     break
                 else:
                     print("Invalid number of networks, please enter a positive integer.")
-            calc_cidr_from_sub(net_class, num_networks)
+            print(calc_cidr_from_sub(net_class, num_networks))
             
             if input("Press Enter to return to the main menu or 'q' to exit: ").strip().lower() == 'q':
                 break
