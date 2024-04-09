@@ -51,7 +51,7 @@ def calc_subnet_info(ip_addr, cidr):
 
 def calc_num_hosts(num_hosts_needed):
     clear_screen()
-    if num_hosts_needed > 0:
+    if num_hosts_needed > 0 and num_hosts_needed < 16777214:
         prefix_length = 32 - (num_hosts_needed + 2).bit_length()
         cidr = f"/{prefix_length}"
         print(f"You will need a subnet with the CIDR notation of {cidr} to accomidate {num_hosts_needed} hosts.")
@@ -59,8 +59,8 @@ def calc_num_hosts(num_hosts_needed):
         return cidr
     
     else:
-        print("Invalid number of hosts.")
-        time.sleep(3)
+        print("Invalid number of hosts, please enter a number from 1 to 16777214.")
+        input("Press enter to continue.")
 
 def calc_class_subnet(net_class, num_nets_needed):
     clear_screen()
@@ -152,8 +152,8 @@ def main():
                 ip_cidr_in = input("Please provide a valid IP address with CIDR notation (e.g. 192.168.1.1/24): ")
                 if "/" in ip_cidr_in:
                     ip_in, cidr_in = ip_cidr_in.split("/")
-                    validate_ip(ip_in)  #returns true or false
-                    validate_cidr(cidr_in)  #returns true or false
+                    validate_ip(ip_in)
+                    validate_cidr(cidr_in)
                     if validate_ip(ip_in) and validate_cidr(cidr_in) == True:
                         calc_subnet_info(ip_in, cidr_in)
                         break
@@ -173,11 +173,11 @@ def main():
                 clear_screen()
                 addr_class_in = input("What class address would you like to subnet, A, B, or C? ").strip().lower()
                 num_subnets_in = int(input("How many subnets would you like to create? "))
-                if addr_class_in in {"a", "b", "c"} and num_subnets_in > 0:
+                if addr_class_in in {"a", "b", "c"} and num_subnets_in > 0 and num_subnets_in < 4194304:
                     calc_class_subnet(addr_class_in, num_subnets_in)
                     break
                 else:
-                    print("Invalid address class or number of subnets, please re-enter.")
+                    print("Invalid address class or number of subnets, please re-enter, (Class must be A, B, or C, number of subnets 0 - 4194304).")
                     input("Press enter to continue.")
 
         elif input_type == '4':
