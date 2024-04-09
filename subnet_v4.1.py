@@ -171,14 +171,28 @@ def main():
         elif input_type == '3':
             while True:
                 clear_screen()
-                addr_class_in = input("What class address would you like to subnet, A, B, or C? ").strip().lower()
-                num_subnets_in = int(input("How many subnets would you like to create? "))
-                if addr_class_in in {"a", "b", "c"} and num_subnets_in > 0 and num_subnets_in < 4194304:
-                    calc_class_subnet(addr_class_in, num_subnets_in)
-                    break
-                else:
-                    print("Invalid address class or number of subnets, please re-enter, (Class must be A, B, or C, number of subnets 0 - 4194304).")
-                    input("Press enter to continue.")
+
+                while True:
+                    addr_class_in = input("What class address would you like to subnet, A, B, or C? ").strip().lower()
+                    if addr_class_in in {"a", "b", "c"}:
+                        break
+                    else:
+                        print("Invalid address class, please enter A, B, or C.")
+                        input("Press enter to continue.")
+
+                while True:
+                    try:
+                        num_subnets_in = int(input("How many subnets would you like to create? "))
+                        if num_subnets_in > 0 and num_subnets_in < 4194304:
+                            break
+                        else:
+                            print("Invalid number of subnets, please enter an interger between 0 and 4194304.")
+                            input("Press enter to continue.")
+                    except ValueError:
+                        print("Invalid input, please enter a valid interger.")
+                        input("Press enter to continue.")
+                calc_class_subnet(addr_class_in, num_subnets_in)
+                break
 
         elif input_type == '4':
             exit()
