@@ -6,13 +6,10 @@
 
 import ipaddress
 import os
-import time
 
-#function to clear the screen
 def clear_screen():
     os.system('clear' if os.name == 'posix' else 'cls')
 
-#validate the provided IP address
 def validate_ip(ip_addr):
     try:
         ipaddress.ip_address(ip_addr)
@@ -20,7 +17,6 @@ def validate_ip(ip_addr):
     except ValueError:
         return False
 
-#validate the provided CIDR notation
 def validate_cidr(cidr):
     cidr = int(cidr)
     if cidr > 0 and cidr < 33:
@@ -38,8 +34,7 @@ def calc_subnet_info(ip_addr, cidr):
     netmask_address = network.netmask
     broadcast_address = network.broadcast_address
     address_range = f"{network_address + 1} to {broadcast_address - 1}"
-
-    # Print the results
+    
     print("")
     print("Network Address:", network_address)
     print("Netmask Address:", netmask_address)
@@ -64,23 +59,18 @@ def calc_num_hosts(num_hosts_needed):
 
 def calc_class_subnet(net_class, num_nets_needed):
     clear_screen()
-    #create a list of CIDR notation for subnets, starting at 8 through 30
     subnet_list = []
     for number in range(7, 30):
         subnet_list.append(number + 1)
 
-    #create a list of powers of 2
     power = 22
     power_list = []
     for i in range(1, power+1):
         power_list.append(2 ** i)
     power_list.insert(0, 0)
-    #copy a power list for class b
     power_list_b = power_list[slice(len(power_list))]
-    #copy a power list for class c
     power_list_c = power_list[slice(len(power_list))]
 
-    #create the subnet dictionary by combining the subnet list and power of 2 list
     subnet_dict = {}
     for key in subnet_list:
         for value in power_list:
@@ -88,11 +78,9 @@ def calc_class_subnet(net_class, num_nets_needed):
             power_list.remove(value)
             break
 
-    #begin creating the class b lists by trimming the original lists down to the size of the class b address range (16-30)
     del subnet_list[0:8]
     del power_list_b[15:23]
 
-    #create the class b dictionary
     subnet_dict_b = {}
     for key in subnet_list:
         for value in power_list_b:
@@ -100,11 +88,9 @@ def calc_class_subnet(net_class, num_nets_needed):
             power_list_b.remove(value)
             break
 
-    #begin creating class c lists by trimming the original lists to the size of class c range
     del subnet_list[0:8]
     del power_list_c[7:23]
 
-    #create class c dictionary
     subnet_dict_c = {}
     for key in subnet_list:
         for value in power_list_c:
@@ -195,6 +181,7 @@ def main():
                 break
 
         elif input_type == '4':
+            clear_screen()
             exit()
 
         else:
